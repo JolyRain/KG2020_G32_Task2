@@ -1,3 +1,4 @@
+import LineDrawers.WuLineDrawer;
 import utils.PixelDrawer;
 
 import java.awt.*;
@@ -13,6 +14,6 @@ public class GraphicsPixelDrawer implements PixelDrawer {
     @Override
     public void drawPixel(int x, int y, Color color) {
         graphics.setColor(color);
-        graphics.fillRect(x, y, 1, 1);
+        graphics.fillRect(x, y, WuLineDrawer.STEP, WuLineDrawer.STEP);
     }
 }

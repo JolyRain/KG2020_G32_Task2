@@ -18,8 +18,8 @@ public class BresenhamLineDrawer implements LineDrawer {
 
         int x = x1;
         int y = y1;
-        int dX = Math.abs(x2 - x1);
-        int dY = Math.abs(y2 - y1);
+        int absDx = Math.abs(x2 - x1);
+        int absDy = Math.abs(y2 - y1);
 
         int directionY = y2 - y1;
         int directionX = x2 - x1;
@@ -30,28 +30,24 @@ public class BresenhamLineDrawer implements LineDrawer {
         if (directionX > 0) directionX = 1;
         else directionX = -1;
 
-        if (dX >= dY) {
-            int error = 2 * dY - dX;
-            for (int i = 0; i < dX; i++) {
+        if (absDx >= absDy) {
+            int error = 2 * absDy - absDx;
+            for (int i = 0; i < absDx; i++) {
                 pixelDrawer.drawPixel(x, y, color);
                 if (error >= 0) {
                     y += directionY;
-                    error += 2 * (dY - dX);
-                } else {
-                    error += 2 * dY;
-                }
+                    error += 2 * (absDy - absDx);
+                } else error += 2 * absDy;
                 x += directionX;
             }
         } else {
-            int error = 2 * dX - dY;
-            for (int i = 0; i < dY; i++) {
+            int error = 2 * absDx - absDy;
+            for (int i = 0; i < absDy; i++) {
                 pixelDrawer.drawPixel(x, y, color);
                 if (error >= 0) {
                     x += directionX;
-                    error += 2 * (dX - dY);
-                } else {
-                    error += 2 * dX;
-                }
+                    error += 2 * (absDx - absDy);
+                } else error += 2 * absDx;
                 y += directionY;
             }
         }

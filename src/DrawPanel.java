@@ -1,6 +1,7 @@
 import LineDrawers.BresenhamLineDrawer;
 import LineDrawers.DDALineDrawer;
 import LineDrawers.GraphicsLineDrawer;
+import LineDrawers.WuLineDrawer;
 import utils.DrawUtils;
 import utils.LineDrawer;
 import utils.PixelDrawer;
@@ -24,19 +25,26 @@ public class DrawPanel extends JPanel implements MouseMotionListener {
         BufferedImage bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics buffGraphics = bufferedImage.createGraphics();
         PixelDrawer pd = new GraphicsPixelDrawer(buffGraphics);
-        LineDrawer lineDrawer = new BresenhamLineDrawer(pd);
+        LineDrawer lineDrawer = new WuLineDrawer(pd);
         buffGraphics.setColor(Color.WHITE);
         buffGraphics.fillRect(0, 0, getWidth(), getHeight());
-        buffGraphics.setColor(Color.BLACK);
+//        buffGraphics.setColor(Color.BLACK);
         drawAll(lineDrawer);
+        lineDrawer = new BresenhamLineDrawer(pd);
+//        lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, 40, 600, Color.BLACK);
+
+//        buffGraphics.setColor(Color.RED);
+//        buffGraphics.drawLine(getWidth() / 2, getHeight() / 2, 50, 400);
         g.drawImage(bufferedImage, 0, 0, null);
         buffGraphics.dispose();
     }
 
     private void drawAll(LineDrawer lineDrawer) {
 //        DrawUtils.drawSnowflake(lineDrawer, getWidth() / 2, getHeight() / 2, 100, 64);
-        lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, position.x, position.y, Color.RED);
+//        lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, 50, 300, Color.BLACK);
+        lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, position.x, position.y, Color.BLACK);
 
+//        lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, 50, 400, Color.RED);
     }
 
     @Override

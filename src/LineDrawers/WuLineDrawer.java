@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class WuLineDrawer implements LineDrawer {
 
-    public static final int STEP = 10;
+    public static final int STEP = 10; // шаг отрисовки пикселей, а также их размер (чтобы нагляднее видеть работу алгоритма)
     private PixelDrawer pixelDrawer;
 
     public WuLineDrawer(PixelDrawer pixelDrawer) {
@@ -32,8 +32,12 @@ public class WuLineDrawer implements LineDrawer {
         int dy = y2 - y1;
         int absDx = Math.abs(dx);
         int absDy = Math.abs(dy);
-        float gradient;
+
+        /*в алгоритме Брезенхейма ошибка считается через абсолютные значение dx и dy,
+         но если считать также здесь, то даже та единственная линия, которая корректно рисуется будет печально выглядеть
+        * */
         int error = 2 * dy - dx;
+        float gradient;
 
         dx = countStep(dx);
         dy = countStep(dy);
@@ -64,6 +68,10 @@ public class WuLineDrawer implements LineDrawer {
                 x += dx;
             }
         } else {
+            /*
+            * случай когда dy > dx я не трогал, тк хотел сначала разобраться со случаем когда dx > dy,
+            * поэтому здесь вообще полный трэш :D
+            * */
             gradient = (float) absDx / absDy;
             float entry = x1 + gradient;
             for (int i = 1; i <= absDy; i++) {

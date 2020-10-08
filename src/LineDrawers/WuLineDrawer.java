@@ -14,7 +14,7 @@ public class WuLineDrawer implements LineDrawer {
         this.pixelDrawer = pixelDrawer;
     }
 
-    private int sign(int i) {
+    private int countStep(int i) {
         return (i > 0) ? STEP : -STEP;
     }
 
@@ -25,6 +25,7 @@ public class WuLineDrawer implements LineDrawer {
 
     @Override
     public void drawLine(int x1, int y1, int x2, int y2, Color color) {
+
         int x = x1;
         int y = y1;
         int dx = x2 - x1;
@@ -34,29 +35,27 @@ public class WuLineDrawer implements LineDrawer {
         float gradient;
         int error = 2 * dy - dx;
 
-        dx = sign(dx);
-        dy = sign(dy);
-
+        dx = countStep(dx);
+        dy = countStep(dy);
 
         Color b1, b2;
         if (absDx >= absDy) {
+
             gradient = (float) absDy / (float) absDx;
             float entry = y1 + gradient;
             for (int i = 1; i <= absDx; i++) {
-                float highAlpha = fractionalPart(entry);
-                float lowAlpha = 1f - fractionalPart(entry);
+                float alpha = fractionalPart(entry);
+                float inverselyAlpha = 1f - fractionalPart(entry);
+
+                b1 = new Color(0, 0, 0, inverselyAlpha);
+                b2 = new Color(0, 0, 0, alpha);
 
                 if (error >= 0) {
-                    b1 = new Color(0, 0, 0, lowAlpha);
-                    b2 = new Color(0, 0, 0, highAlpha);
-
-                    pixelDrawer.drawPixel(x, y, b1); //green
+                    pixelDrawer.drawPixel(x, y, b1);
                     pixelDrawer.drawPixel(x, y + dy, b2);
                     y += dy;
                     error += 2 * (absDy - absDx);
                 } else {
-                    b1 = new Color(0, 0, 0, lowAlpha);
-                    b2 = new Color(0, 0, 0, highAlpha);
                     pixelDrawer.drawPixel(x, y, b2);
                     pixelDrawer.drawPixel(x, y - dy, b1);
                     error += 2 * absDy;

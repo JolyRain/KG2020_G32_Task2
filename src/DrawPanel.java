@@ -1,14 +1,12 @@
 import LineDrawers.BresenhamLineDrawer;
-import LineDrawers.DDALineDrawer;
-import LineDrawers.GraphicsLineDrawer;
 import LineDrawers.WuLineDrawer;
-import utils.DrawUtils;
 import utils.LineDrawer;
 import utils.PixelDrawer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
@@ -31,7 +29,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener {
 //        buffGraphics.setColor(Color.BLACK);
         drawAll(lineDrawer);
         lineDrawer = new BresenhamLineDrawer(pd);
-//        lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, 40, 600, Color.BLACK);
+//        lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, 497, 296, Color.BLACK);
 
 //        buffGraphics.setColor(Color.RED);
 //        buffGraphics.drawLine(getWidth() / 2, getHeight() / 2, 50, 400);
@@ -43,8 +41,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener {
 //        DrawUtils.drawSnowflake(lineDrawer, getWidth() / 2, getHeight() / 2, 100, 64);
 //        lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, 50, 300, Color.BLACK);
         lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, position.x, position.y, Color.BLACK);
-
-//        lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, 50, 400, Color.RED);
+                                                                    //      497,     296 - нормальная линия
+//        lineDrawer.drawLine(getWidth() / 2, getHeight() / 2, 497, 276, Color.RED);
     }
 
     @Override
@@ -55,6 +53,20 @@ public class DrawPanel extends JPanel implements MouseMotionListener {
     @Override
     public void mouseMoved(MouseEvent e) {
         position = new Point(e.getX(), e.getY());
+//        System.out.println(e.getX() + "   " + e.getY() );
         repaint();
     }
+
+//    @Override
+//    public void mouseDragged(MouseEvent e) {
+//
+//    }
+//
+//    @Override
+//    public void mouseMoved(MouseEvent e) {
+//        position = new Point(e.getX(), e.getY());
+//        repaint();
+//    }
+
+
 }

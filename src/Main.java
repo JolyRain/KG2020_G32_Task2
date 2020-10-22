@@ -1,3 +1,5 @@
+import app.MainWindow;
+
 import javax.swing.*;
 
 public class Main {
@@ -7,5 +9,8 @@ public class Main {
         mainWindow.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainWindow.setLocationRelativeTo(null);
         mainWindow.setVisible(true);
+        mainWindow.setFocusable(true);
+
     }
+
 }

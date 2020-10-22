@@ -1,7 +1,7 @@
-package LineDrawers;
+package lineDrawers;
 
-import utils.LineDrawer;
-import utils.PixelDrawer;
+import pixelDrawers.PixelDrawer;
+import utils.ScreenPoint;
 
 import java.awt.*;
 
@@ -18,17 +18,14 @@ public class BresenhamLineDrawer implements LineDrawer {
 
         int x = x1;
         int y = y1;
-        int absDx = Math.abs(x2 - x1);
-        int absDy = Math.abs(y2 - y1);
+        int dx = x2 - x1;
+        int dy = y2 - y1;
+        int absDx = Math.abs(dx);
+        int absDy = Math.abs(dy);
 
-        int directionY = y2 - y1;
-        int directionX = x2 - x1;
 
-        if (directionY > 0) directionY = 1;
-        else directionY = -1;
-
-        if (directionX > 0) directionX = 1;
-        else directionX = -1;
+        int directionX = countStep(dx);
+        int directionY = countStep(dy);
 
         if (absDx >= absDy) {
             int error = 2 * absDy - absDx;
@@ -51,5 +48,10 @@ public class BresenhamLineDrawer implements LineDrawer {
                 y += directionY;
             }
         }
+    }
+
+    @Override
+    public void drawLine(ScreenPoint point1, ScreenPoint point2, Color color) {
+        drawLine(point1.getX(), point1.getY(), point2.getX(), point2.getY(), color);
     }
 }

@@ -1,7 +1,7 @@
-package LineDrawers;
+package lineDrawers;
 
-import utils.LineDrawer;
-import utils.PixelDrawer;
+import pixelDrawers.PixelDrawer;
+import utils.ScreenPoint;
 
 import java.awt.*;
 
@@ -20,32 +20,29 @@ public class DDALineDrawer implements LineDrawer {
         if (Math.abs(dx) > Math.abs(dy)) {
             double k = dy / dx;
             if (x1 > x2) {
-                int tmp = x1;
-                x1 = x2;
-                x2 = tmp;
-                tmp = y1;
-                y1 = y2;
-                y2 = tmp;
+                x1 = swap(x2, x2 = x1);
+                y1 = swap(y2, y2 = y1);
             }
-            for (int j = x1; j < x2; j++) {
+            for (int j = x1; j <= x2; j++) {
                 double i = k * (j - x1) + y1;
-                pixelDrawer.drawPixel(j, (int) i, Color.RED);
+                pixelDrawer.drawPixel(j, (int) i, color);
             }
         } else {
             double kObr = dx / dy;
             if (y1 > y2) {
-                int tmp = x1;
-                x1 = x2;
-                x2 = tmp;
-                tmp = y1;
-                y1 = y2;
-                y2 = tmp;
+                x1 = swap(x2, x2 = x1);
+                y1 = swap(y2, y2 = y1);
             }
             for (int i = y1; i <= y2; i++) {
                 double j = kObr * (i - y1) + x1;
-                pixelDrawer.drawPixel((int) j, i, Color.RED);
+                pixelDrawer.drawPixel((int) j, i, color);
             }
         }
+    }
+
+    @Override
+    public void drawLine(ScreenPoint point1, ScreenPoint point2, Color color) {
+        drawLine(point1.getX(), point1.getY(), point2.getX(), point2.getY(), color);
     }
 }
 

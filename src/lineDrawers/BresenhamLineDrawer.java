@@ -15,14 +15,12 @@ public class BresenhamLineDrawer implements LineDrawer {
 
     @Override
     public void drawLine(int x1, int y1, int x2, int y2, Color color) {
-
         int x = x1;
         int y = y1;
         int dx = x2 - x1;
         int dy = y2 - y1;
         int absDx = Math.abs(dx);
         int absDy = Math.abs(dy);
-
 
         int directionX = countStep(dx);
         int directionY = countStep(dy);

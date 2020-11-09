@@ -27,6 +27,15 @@ public class WuLineDrawer implements LineDrawer {
         int blue = color.getBlue();
         int green = color.getGreen();
 
+        if (dx == 0) {
+            drawStraightLine(x1, y1, x2, y2, color, true);
+            return;
+        }
+        if (dy == 0) {
+            drawStraightLine(x1, y1, x2, y2, color, false);
+            return;
+        }
+
         float gradient;
         if (absDx > absDy) {
             if (x1 > x2) {
@@ -34,8 +43,7 @@ public class WuLineDrawer implements LineDrawer {
                 y1 = swap(y2, y2 = y1);
             }
             gradient = (float) dy / dx;
-            float interY = y1 + gradient;
-            pixelDrawer.drawPixel(x1, y1, color);
+            float interY = y1; // + gradient
             for (int x = x1; x < x2; x++) {
                 int alpha = (int) (255 - fractionalPart(interY) * 255);
                 int invertedAlpha = (int) (fractionalPart(interY) * 255);
@@ -51,8 +59,8 @@ public class WuLineDrawer implements LineDrawer {
                 y1 = swap(y2, y2 = y1);
             }
             gradient = (float) dx / dy;
-            float interX = x1 + gradient;
-            pixelDrawer.drawPixel(x1, y1, color);
+            float interX = x1; // + gradient
+//            pixelDrawer.drawPixel(x1, y1, color);
             for (int y = y1; y < y2; y++) {
                 int alpha = (int) (255 - fractionalPart(interX) * 255);
                 int invertedAlpha = (int) (fractionalPart(interX) * 255);
@@ -63,14 +71,28 @@ public class WuLineDrawer implements LineDrawer {
                 interX += gradient;
             }
         }
+        pixelDrawer.drawPixel(x1, y1, color);
         pixelDrawer.drawPixel(x2, y2, color);
+    }
+
+    private void drawStraightLine(int x1, int y1, int x2, int y2, Color color, boolean isVertical) {
+            if (isVertical) {
+                if (y1 > y2) y1 = swap(y2, y2 = y1);
+                for (int y = y1; y <= y2; y++) {
+                    pixelDrawer.drawPixel(x1, y, color);
+                }
+            } else {
+                if (x1 > x2) x1 = swap(x2, x2 = x1);
+                for (int x = x1; x < x2; x++) {
+                    pixelDrawer.drawPixel(x, y1, color);
+                }
+            }
     }
 
     @Override
     public void drawLine(ScreenPoint point1, ScreenPoint point2, Color color) {
         drawLine(point1.getX(), point1.getY(), point2.getX(), point2.getY(), color);
     }
-
 }
 
 

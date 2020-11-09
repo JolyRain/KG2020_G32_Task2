@@ -1,5 +1,9 @@
 package app;
 
+import ellipseDrawers.BresenhamEllipseDrawer;
+import ellipseDrawers.BresenhamEllipseFiller;
+import ellipseDrawers.EllipseDrawer;
+import ellipseDrawers.EllipseFiller;
 import lineDrawers.BresenhamLineDrawer;
 import lineDrawers.DDALineDrawer;
 import lineDrawers.LineDrawer;
@@ -15,6 +19,7 @@ import utils.ScreenPoint;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,14 +35,17 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     private PixelDrawer pixelDrawer = null;
     private LineDrawer lineDrawer = null;
-    private DrawMode drawMode = DrawMode.DDA;
+    private DrawMode drawMode = DrawMode.BRESENHAM;
 
 
     public DrawPanel() {
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
         this.addMouseWheelListener(this);
+        Timer timer = new Timer(10, e -> repaint());
+//        timer.start();
     }
+    private int counter = 0;
 
     private void drawLegend(Graphics2D graphics2D) {
         graphics2D.setColor(Color.BLACK);
@@ -59,10 +67,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     public void paint(Graphics g) {
         screenConverter.setScreenWidth(getWidth());
         screenConverter.setScreenHeight(getHeight());
-        BufferedImage bufferedImage = new BufferedImage(
-                screenConverter.getScreenWidth(), screenConverter.getScreenHeight(), BufferedImage.TYPE_INT_RGB);
-        pixelDrawer = new BufferedImagePixelDrawer(bufferedImage);
+        BufferedImage bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
 //        pixelDrawer = new GraphicsPixelDrawer(g);
+        pixelDrawer = new BufferedImagePixelDrawer(bufferedImage);
+
         switch (drawMode) {
             case DDA:
                 lineDrawer = new DDALineDrawer(pixelDrawer);
@@ -74,22 +82,35 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 lineDrawer = new WuLineDrawer(pixelDrawer);
                 break;
         }
-        Graphics2D buffGraphics = bufferedImage.createGraphics();
-        buffGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        EllipseDrawer ellipseDrawer = new BresenhamEllipseDrawer(pixelDrawer);
+        EllipseFiller ellipseFiller = new BresenhamEllipseFiller(pixelDrawer, lineDrawer);
+
+        Graphics2D buffGraphics = (Graphics2D) bufferedImage.getGraphics();
 //       g.setColor(Color.WHITE);
 //        g.fillRect(0, 0, getWidth(), getHeight());
         buffGraphics.setColor(Color.WHITE);
-        buffGraphics.fillRect(0, 0, getWidth(), getHeight());
-//        drawLegend(buffGraphics);
+        buffGraphics.fillRect(0, 0, screenConverter.getScreenWidth(), screenConverter.getScreenHeight());
 
-//         drawSnowFlake(lineDrawer, getWidth() / 2, getHeight() / 2, 300, 10);
+        drawLegend(buffGraphics);
+
+
+//         drawSnowFlake(lineDrawer, getWidth() / 2, getHeight() / 2, 300, 12);
+//        Line line1 = new Line(new RealPoint(0, 0), new RealPoint(4, 0), Color.BLACK);
+//        allLines.add(line1);
         for (Line line : allLines) {
             drawLine(lineDrawer, line);
         }
         if (currentNewLine != null) drawLine(lineDrawer, currentNewLine);
+//        if (counter <= 360) {
+//            buffGraphics.drawArc(550, 200, 200, 400, 90, counter);
+//            buffGraphics.drawArc(750, 200, 200, 400, 180, -counter);
+//            counter++;
+//        } else counter = 0;
+        ellipseDrawer.drawEllipse(550, 400, 400, 200, Color.BLACK);
+//        ellipseFiller.fillEllipse(550, 400, 400, 200, Color.BLACK);
 
-        g.drawImage(bufferedImage, 0, 0, null);
-//
+        g.drawImage(bufferedImage, 0, 0, screenConverter.getScreenWidth(), screenConverter.getScreenHeight(), null);
+
         buffGraphics.dispose();
     }
 

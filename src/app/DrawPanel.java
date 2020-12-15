@@ -1,16 +1,16 @@
 package app;
 
+import ellipseDrawers.ArcDrawer;
+import ellipseDrawers.BresenhamArcDrawer;
 import ellipseDrawers.BresenhamEllipseDrawer;
-import ellipseDrawers.BresenhamEllipseFiller;
 import ellipseDrawers.EllipseDrawer;
-import ellipseDrawers.EllipseFiller;
 import lineDrawers.BresenhamLineDrawer;
 import lineDrawers.DDALineDrawer;
 import lineDrawers.LineDrawer;
 import lineDrawers.WuLineDrawer;
 import pixelDrawers.BufferedImagePixelDrawer;
-import pixelDrawers.GraphicsPixelDrawer;
 import pixelDrawers.PixelDrawer;
+import test.testing.TestArcs;
 import utils.Line;
 import utils.RealPoint;
 import utils.ScreenConverter;
@@ -19,7 +19,6 @@ import utils.ScreenPoint;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,8 +41,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
         this.addMouseWheelListener(this);
-        Timer timer = new Timer(10, e -> repaint());
-//        timer.start();
+//        TestArcs.startTest();
+        Timer timer = new Timer(40, e -> repaint());
+        timer.start();
     }
     private int counter = 0;
 
@@ -83,7 +83,6 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 break;
         }
         EllipseDrawer ellipseDrawer = new BresenhamEllipseDrawer(pixelDrawer);
-        EllipseFiller ellipseFiller = new BresenhamEllipseFiller(pixelDrawer, lineDrawer);
 
         Graphics2D buffGraphics = (Graphics2D) bufferedImage.getGraphics();
 //       g.setColor(Color.WHITE);
@@ -97,17 +96,23 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 //         drawSnowFlake(lineDrawer, getWidth() / 2, getHeight() / 2, 300, 12);
 //        Line line1 = new Line(new RealPoint(0, 0), new RealPoint(4, 0), Color.BLACK);
 //        allLines.add(line1);
-        for (Line line : allLines) {
-            drawLine(lineDrawer, line);
-        }
-        if (currentNewLine != null) drawLine(lineDrawer, currentNewLine);
+        ArcDrawer arcDrawer = new BresenhamArcDrawer(pixelDrawer);
+//        for (Line line : allLines) {
+//            drawLine(lineDrawer, line);
+//        }
+//        if (currentNewLine != null) drawLine(lineDrawer, currentNewLine);
 //        if (counter <= 360) {
-//            buffGraphics.drawArc(550, 200, 200, 400, 90, counter);
-//            buffGraphics.drawArc(750, 200, 200, 400, 180, -counter);
-//            counter++;
+
+            buffGraphics.setColor(Color.RED);
+            int start = 180;
+            int arc = 90;
+            buffGraphics.drawArc(550, 400, 100, 200, start, arc);
+            arcDrawer.drawArc(400, 400, 100, 200 , start, arc, Color.BLACK);
+            counter++;
 //        } else counter = 0;
-        ellipseDrawer.drawEllipse(550, 400, 400, 200, Color.BLACK);
-//        ellipseFiller.fillEllipse(550, 400, 400, 200, Color.BLACK);
+
+//        ellipseDrawer.fillEllipse(550, 400, 400, 200, Color.BLACK);
+//        buffGraphics.fillOval(550, 400, 400, 200);
 
         g.drawImage(bufferedImage, 0, 0, screenConverter.getScreenWidth(), screenConverter.getScreenHeight(), null);
 

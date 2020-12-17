@@ -1,16 +1,14 @@
 package app;
 
-import ellipseDrawers.ArcDrawer;
-import ellipseDrawers.BresenhamArcDrawer;
-import ellipseDrawers.BresenhamEllipseDrawer;
-import ellipseDrawers.EllipseDrawer;
+import ellipseDrawers.*;
 import lineDrawers.BresenhamLineDrawer;
 import lineDrawers.DDALineDrawer;
 import lineDrawers.LineDrawer;
 import lineDrawers.WuLineDrawer;
 import pixelDrawers.BufferedImagePixelDrawer;
 import pixelDrawers.PixelDrawer;
-import test.testing.TestArcs;
+import tests.myImpl.MyFactoryImplementation;
+import tests.testing.TestArcs;
 import utils.Line;
 import utils.RealPoint;
 import utils.ScreenConverter;
@@ -37,13 +35,16 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     private DrawMode drawMode = DrawMode.BRESENHAM;
 
 
-    public DrawPanel() {
+    public DrawPanel() throws Exception {
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
         this.addMouseWheelListener(this);
-//        TestArcs.startTest();
+        TestArcs.startTest(new MyFactoryImplementation(),
+                TestArcs.IMG_YOUR|TestArcs.IMG_IDEAL|TestArcs.IMG_DIFF, TestArcs.TEST_ARC,
+                true, "./src/results");
+
         Timer timer = new Timer(40, e -> repaint());
-        timer.start();
+//        timer.start();
     }
     private int counter = 0;
 
@@ -63,6 +64,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             lineDrawer.drawLine(x, y, (int) dx, (int) dy, Color.BLACK);
         }
     }
+
     @Override
     public void paint(Graphics g) {
         screenConverter.setScreenWidth(getWidth());
@@ -70,7 +72,6 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         BufferedImage bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
 //        pixelDrawer = new GraphicsPixelDrawer(g);
         pixelDrawer = new BufferedImagePixelDrawer(bufferedImage);
-
         switch (drawMode) {
             case DDA:
                 lineDrawer = new DDALineDrawer(pixelDrawer);
@@ -97,18 +98,22 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 //        Line line1 = new Line(new RealPoint(0, 0), new RealPoint(4, 0), Color.BLACK);
 //        allLines.add(line1);
         ArcDrawer arcDrawer = new BresenhamArcDrawer(pixelDrawer);
+        ArcDrawer arcDrawer2 = new BresenhamArcDrawer2(pixelDrawer);
 //        for (Line line : allLines) {
 //            drawLine(lineDrawer, line);
 //        }
 //        if (currentNewLine != null) drawLine(lineDrawer, currentNewLine);
 //        if (counter <= 360) {
 
-            buffGraphics.setColor(Color.RED);
-            int start = 180;
-            int arc = 90;
-            buffGraphics.drawArc(550, 400, 100, 200, start, arc);
-            arcDrawer.drawArc(400, 400, 100, 200 , start, arc, Color.BLACK);
-            counter++;
+        buffGraphics.setColor(Color.RED);
+            int start = 110;
+            int arc = 4;
+            int width = 200;
+            int height = 200;
+            buffGraphics.drawArc(550, 400, width, height, start, arc);
+            arcDrawer.drawArc(400, 400, width, height , start, arc, Color.BLACK);
+            arcDrawer2.drawArc(150, 400, width, height, start, arc, Color.BLUE);
+//            counter++;
 //        } else counter = 0;
 
 //        ellipseDrawer.fillEllipse(550, 400, 400, 200, Color.BLACK);

@@ -5,7 +5,6 @@ import lineDrawers.WuLineDrawer;
 import pixelDrawers.PixelDrawer;
 
 import java.awt.*;
-import java.util.Map;
 
 public class BresenhamArcDrawer implements ArcDrawer {
     private PixelDrawer pixelDrawer;
@@ -35,7 +34,7 @@ public class BresenhamArcDrawer implements ArcDrawer {
                 delta += 4 * squareB * (2 * x + 3);
             } else {
                 x++;
-                delta += -8 * squareA * (y - 1) + 4 * squareB * (2 * x + 3);
+                delta = delta -8 * squareA * (y - 1) + 4 * squareB * (2 * x + 3);
                 y--;
             }
         }
@@ -47,49 +46,71 @@ public class BresenhamArcDrawer implements ArcDrawer {
                 delta += 4 * squareA * (2 * y + 3);
             } else {
                 y--;
-                delta += -8 * squareB * (x + 1) + 4 * squareA * (2 * y + 3);
+                delta = delta -8 * squareB * (x + 1) + 4 * squareA * (2 * y + 3);
                 x++;
             }
         }
     }
 
-    private double withoutPeriod(double angle) {
+    private int withoutPeriod(int angle) {
         while (angle > 360) {
-            angle -= 180;
+            angle -= 360;
         }
         return angle;
     }
 
     private void drawEllipsePoints(int centerX, int centerY, int x, int y, int startAngle, int arcAngle, Color color) {
-        double angle = withoutPeriod(Math.toDegrees(Math.atan2(y, x)));
-        int endAngle = startAngle + arcAngle;
+        double angle = Math.toDegrees(Math.atan2(y, x));
+        startAngle = withoutPeriod(startAngle);
+        arcAngle = withoutPeriod(arcAngle);
+        int endAngle = withoutPeriod(startAngle + arcAngle);
 
+        boolean mustReverse = false;
+
+        if (endAngle < startAngle) {
+            int buf = endAngle;
+            endAngle = startAngle;
+            startAngle = buf;
+            mustReverse = true;
+        }
         // 0 - 90
-        if (180 - angle >= startAngle && 180 - angle <= endAngle) {
+        if (reverse(180 - angle >= startAngle && 180 - angle <= endAngle, mustReverse)) {
+
             pixelDrawer.drawPixel(centerX - x, centerY - y, color);
         }
 
         // 90 - 180
-        if (angle >= startAngle && angle <= endAngle) {
+        if (reverse(angle >= startAngle && angle <= endAngle, mustReverse)) {
+
             pixelDrawer.drawPixel(centerX + x, centerY - y, color);
         }
 
         // 180 - 270
-        if (360 - angle >= startAngle && 360 - angle <= endAngle) {
+        if (reverse(360 - angle >= startAngle && 360 - angle <= endAngle, mustReverse)) {
+
             pixelDrawer.drawPixel(centerX + x, centerY + y, color);
         }
 
         // 270 - 360
-        if (angle + 180 >= startAngle && angle + 180 <= endAngle) {
+        if (reverse(angle + 180 >= startAngle && angle + 180 <= endAngle, mustReverse)) {
+
             pixelDrawer.drawPixel(centerX - x, centerY + y, color);
         }
+    }
+    private boolean equals(double angle1, double angle2) {
+        return Math.abs(angle1 - angle2) < 1e-1;
+    }
+
+    private boolean reverse(boolean predicate, boolean reverse) {
+        if (reverse) return !predicate;
+        else return predicate;
     }
 
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle, Color color) {
-//        fillArcLevel(x, y, width - 2, height, startAngle, arcAngle, color);
-//        fillArcLevel(x, y, width, height - 2, startAngle, arcAngle, color);
-//        fillArcLevel(x, y, width - 2, height - 2, startAngle, arcAngle, color);
+        fillArcLevel(x, y, width - 2, height, startAngle, arcAngle, color);
+        fillArcLevel(x, y, width, height - 2, startAngle, arcAngle, color);
+        fillArcLevel(x, y, width - 2, height - 2, startAngle, arcAngle, color);
     }
 
     private void fillArcLevel(int x, int y, int width, int height, int startAngle, int arcAngle, Color color) {

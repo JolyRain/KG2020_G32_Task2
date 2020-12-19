@@ -6,16 +6,16 @@ import pixelDrawers.PixelDrawer;
 
 import java.awt.*;
 
-public class BresenhamArcDrawer implements ArcDrawer {
+ class BresenhamArcDrawerOld1 implements ArcDrawer {
     private PixelDrawer pixelDrawer;
     private LineDrawer lineDrawer;
 
-    public BresenhamArcDrawer(PixelDrawer pixelDrawer) {
+    BresenhamArcDrawerOld1(PixelDrawer pixelDrawer) {
         this.pixelDrawer = pixelDrawer;
         lineDrawer = new WuLineDrawer(pixelDrawer);
     }
 
-    @Override
+//    @Override
     public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle, Color color) {
         int a = width / 2;
         int b = height / 2;
@@ -101,12 +101,9 @@ public class BresenhamArcDrawer implements ArcDrawer {
         return Math.abs(angle1 - angle2) < 1e-1;
     }
 
-    private boolean reverse(boolean predicate, boolean reverse) {
-        if (reverse) return !predicate;
-        else return predicate;
-    }
 
-    @Override
+
+//    @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle, Color color) {
         fillArcLevel(x, y, width - 2, height, startAngle, arcAngle, color);
         fillArcLevel(x, y, width, height - 2, startAngle, arcAngle, color);
@@ -174,5 +171,10 @@ public class BresenhamArcDrawer implements ArcDrawer {
         if (angle + 180 >= startAngle && angle + 180 <= endAngle) {
             lineDrawer.drawLine(centerX, centerY, centerX - x, centerY + y, color);
         }
+    }
+
+    @Override
+    public void drawArc(int centerX, int centerY, int width, int height, double startAngle, double arcAngle, Color color) {
+//        drawArc(centerX, centerY, width, height, startAngle, arcAngle, color);
     }
 }

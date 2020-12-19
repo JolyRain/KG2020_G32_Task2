@@ -1,6 +1,9 @@
 package app;
 
 import ellipseDrawers.*;
+import ellipseDrawersDouble.BresenhamArcDrawerRadians;
+import ellipseDrawersDouble.BresenhamEllipseDrawerRadians;
+import ellipseDrawersDouble.BresenhamPieDrawerRadians;
 import lineDrawers.BresenhamLineDrawer;
 import lineDrawers.DDALineDrawer;
 import lineDrawers.LineDrawer;
@@ -33,20 +36,29 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     private PixelDrawer pixelDrawer = null;
     private LineDrawer lineDrawer = null;
     private DrawMode drawMode = DrawMode.BRESENHAM;
-
+    private double counter = 0;
 
     public DrawPanel() throws Exception {
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
         this.addMouseWheelListener(this);
-        TestArcs.startTest(new MyFactoryImplementation(),
-                TestArcs.IMG_YOUR|TestArcs.IMG_IDEAL|TestArcs.IMG_DIFF, TestArcs.TEST_ARC,
-                true, "./src/results");
-
+//        TestArcs.startTest(new MyFactoryImplementation(),
+//                TestArcs.IMG_YOUR|TestArcs.IMG_IDEAL|TestArcs.IMG_DIFF,
+//                TestArcs.TEST_FILL,
+//                true, "./src/results");
+//
         Timer timer = new Timer(40, e -> repaint());
-//        timer.start();
+        timer.start();
     }
-    private int counter = 0;
+
+    public static void drawSnowFlake(LineDrawer lineDrawer, int x, int y, int r, int n) {
+        double da = 2 * Math.PI / n;
+        for (int i = 0; i < n; i++) {
+            double dx = r * Math.cos(da * i) + x;
+            double dy = r * Math.sin(da * i) + y;
+            lineDrawer.drawLine(x, y, (int) dx, (int) dy, Color.BLACK);
+        }
+    }
 
     private void drawLegend(Graphics2D graphics2D) {
         graphics2D.setColor(Color.BLACK);
@@ -54,14 +66,6 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         graphics2D.drawString("Selected mode: " + drawMode, 0, getHeight() - 100);
         for (int i = 1; i < 4; i++) {
             graphics2D.drawString("Key " + i + " -- " + DrawMode.values()[i - 1], 0, getHeight() - 100 + i * 20);
-        }
-    }
-    public static void drawSnowFlake(LineDrawer lineDrawer, int x, int y, int r, int n) {
-        double da = 2 * Math.PI / n;
-        for (int i = 0; i < n; i++) {
-            double dx = r * Math.cos(da * i) + x;
-            double dy = r * Math.sin(da * i) + y;
-            lineDrawer.drawLine(x, y, (int) dx, (int) dy, Color.BLACK);
         }
     }
 
@@ -83,7 +87,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 lineDrawer = new WuLineDrawer(pixelDrawer);
                 break;
         }
-        EllipseDrawer ellipseDrawer = new BresenhamEllipseDrawer(pixelDrawer);
+        EllipseDrawer ellipseDrawer = new BresenhamEllipseDrawerRadians(pixelDrawer);
 
         Graphics2D buffGraphics = (Graphics2D) bufferedImage.getGraphics();
 //       g.setColor(Color.WHITE);
@@ -91,30 +95,34 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         buffGraphics.setColor(Color.WHITE);
         buffGraphics.fillRect(0, 0, screenConverter.getScreenWidth(), screenConverter.getScreenHeight());
 
-        drawLegend(buffGraphics);
+//        drawLegend(buffGraphics);
 
 
 //         drawSnowFlake(lineDrawer, getWidth() / 2, getHeight() / 2, 300, 12);
 //        Line line1 = new Line(new RealPoint(0, 0), new RealPoint(4, 0), Color.BLACK);
 //        allLines.add(line1);
-        ArcDrawer arcDrawer = new BresenhamArcDrawer(pixelDrawer);
-        ArcDrawer arcDrawer2 = new BresenhamArcDrawer2(pixelDrawer);
+        ArcDrawer arcDrawer = new BresenhamArcDrawerRadians(pixelDrawer);
+        PieDrawer pieDrawer = new BresenhamPieDrawerRadians(pixelDrawer);
 //        for (Line line : allLines) {
 //            drawLine(lineDrawer, line);
 //        }
 //        if (currentNewLine != null) drawLine(lineDrawer, currentNewLine);
-//        if (counter <= 360) {
+        double step = 0.1;
+        if (counter <  360 + step) {
 
-        buffGraphics.setColor(Color.RED);
-            int start = 110;
-            int arc = 4;
+            buffGraphics.setColor(Color.RED);
+            double start = 10;
+            double arc = 350;
             int width = 200;
-            int height = 200;
-            buffGraphics.drawArc(550, 400, width, height, start, arc);
-            arcDrawer.drawArc(400, 400, width, height , start, arc, Color.BLACK);
-            arcDrawer2.drawArc(150, 400, width, height, start, arc, Color.BLUE);
-//            counter++;
-//        } else counter = 0;
+            int height = 100;
+            counter = (int) arc;
+            buffGraphics.fillArc(550, 400 - height / 2, width, height, (int) start, (int) counter);
+            pieDrawer.fillPie(400, 400, width, height, Math.toRadians(start), Math.toRadians(counter), Color.BLACK);
+//            arcDrawer.drawArc(400, 400, width, height , Math.toRadians(start), Math.toRadians(counter), Color.BLUE);
+            ellipseDrawer.fillEllipse(400, 100, width, height, Color.BLACK);
+
+            counter++;
+        } else counter = 0;
 
 //        ellipseDrawer.fillEllipse(550, 400, 400, 200, Color.BLACK);
 //        buffGraphics.fillOval(550, 400, 400, 200);

@@ -18,8 +18,8 @@ public class ArcDrawerImpl implements ArcDrawer {
         int centerY = y + height / 2;
         double aStart = 180 * startAngle / Math.PI;
         double aArc = 180 * arcAngle / Math.PI;
-        double aEnd = aStart + aArc;
+//        double aEnd = aStart + aArc;
 
-        myArcDrawer.drawArc(centerX, centerY, width, height, (int) aStart, (int) aArc, c);
+        myArcDrawer.drawArc(centerX, centerY, width, height, startAngle, arcAngle, c);
     }
 }
